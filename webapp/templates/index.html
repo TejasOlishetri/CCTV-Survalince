@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepCamera — Intelligent CCTV Surveillance</title>
+    <meta name="description" content="AI-powered CCTV surveillance with face recognition, fall detection, missing person finder, and multi-channel alerts.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-shell">
+
+        <!-- ===== TOP NAVIGATION BAR ===== -->
+        <header class="topbar" id="topbar">
+            <div class="topbar-left">
+                <div class="logo">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                        <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                </div>
+                <span class="logo-text">DeepCamera</span>
+                <span class="logo-badge">AEGIS</span>
+            </div>
+
+            <nav class="mode-nav" id="mode-nav">
+                <button class="mode-tab active" data-mode="surveillance" id="tab-surveillance">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    Surveillance
+                </button>
+                <button class="mode-tab" data-mode="fall_detection" id="tab-fall">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="3"/><path d="M7 13l3-3 4 2 3-3M6 21l6-4 4 4"/></svg>
+                    Fall Guard
+                </button>
+                <button class="mode-tab" data-mode="parking" id="tab-parking">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/></svg>
+                    Parking
+                </button>
+                <button class="mode-tab" data-mode="privacy" id="tab-privacy">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Privacy
+                </button>
+            </nav>
+
+            <div class="topbar-right">
+                <div class="stat-group">
+                    <span class="live-dot"></span>
+                    <span class="stat-label">LIVE</span>
+                    <span class="stat-divider"></span>
+                    <span class="stat-val" id="fps-val">0.0</span>
+                    <span class="stat-unit">FPS</span>
+                    <span class="stat-divider"></span>
+                    <span class="stat-val" id="latency-val">0</span>
+                    <span class="stat-unit">ms</span>
+                    <span class="stat-divider"></span>
+                    <span class="stat-val stat-alert" id="intruder-val">0</span>
+                    <span class="stat-unit">alerts</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== MAIN LAYOUT ===== -->
+        <main class="workspace">
+
+            <!-- LEFT: Video Feed -->
+            <section class="feed-area">
+                <div class="feed-card">
+                    <div class="feed-bar">
+                        <div class="feed-info">
+                            <span class="rec-badge">REC</span>
+                            <span class="feed-label" id="current-source-label">Webcam (0)</span>
+                            <span class="mode-label" id="hud-mode-badge">Surveillance</span>
+                        </div>
+                        <div class="feed-actions">
+                            <button class="icon-btn" id="btn-audio-alarm" title="Toggle Siren">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                                <span id="audio-alarm-label">Muted</span>
+                            </button>
+                            <button class="icon-btn" id="btn-snapshot" title="Capture Snapshot">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                            </button>
+                            <button class="icon-btn" id="btn-record" title="Start/Stop Recording">
+                                <span style="color:var(--red); font-size:16px;">⏺</span>
+                                <span id="record-label">REC</span>
+                            </button>
+                            <button class="icon-btn" id="btn-fullscreen" title="Fullscreen">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="feed-viewport" id="video-wrapper">
+                        <img id="live-feed" src="/video_feed" alt="Live Feed" loading="eager">
+                        <!-- Emergency Overlay -->
+                        <div class="alert-overlay" id="emergency-banner" style="display:none;">
+                            <span class="alert-icon">⚠</span>
+                            <div>
+                                <strong>FALL DETECTED</strong>
+                                <span>Emergency alert triggered</span>
+                            </div>
+                        </div>
+                        <!-- Missing Person Found Overlay -->
+                        <div class="alert-overlay alert-missing" id="missing-banner" style="display:none;">
+                            <span class="alert-icon">🔍</span>
+                            <div>
+                                <strong>MISSING PERSON SPOTTED</strong>
+                                <span id="missing-banner-detail">Match found in camera feed</span>
+                            </div>
+                        </div>
+                        <div class="timestamp-hud" id="hud-clock">00:00:00</div>
+                    </div>
+
+                    <!-- Parking HUD -->
+                    <div class="parking-bar" id="parking-summary-bar" style="display:none;">
+                        <div class="parking-stat">
+                            <span class="parking-label">OCCUPANCY</span>
+                            <span class="parking-value" id="parking-metric-val">0 / 4</span>
+                        </div>
+                        <div class="parking-slots" id="parking-slots-grid"></div>
+                    </div>
+
+                    <!-- Snapshot Gallery -->
+                    <div class="gallery-bar">
+                        <span class="gallery-title">Snapshots</span>
+                        <div class="gallery-track" id="snapshot-tray">
+                            <span class="gallery-empty">No snapshots yet</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RIGHT: Sidebar Panels -->
+            <aside class="sidebar">
+                <div class="sidebar-nav">
+                    <button class="sidebar-tab active" data-target="panel-camera">Camera</button>
+                    <button class="sidebar-tab" data-target="panel-faceid">Face ID</button>
+                    <button class="sidebar-tab" data-target="panel-missing">Find Person</button>
+                    <button class="sidebar-tab" data-target="panel-chat">AI Guard</button>
+                    <button class="sidebar-tab" data-target="panel-privacy">Privacy</button>
+                    <button class="sidebar-tab" data-target="panel-alerts">Alerts</button>
+                    <button class="sidebar-tab" data-target="panel-timeline">Log</button>
+                </div>
+
+                <!-- PANEL: Camera -->
+                <div class="panel active" id="panel-camera">
+                    <div class="panel-box">
+                        <h2 class="panel-heading">Camera Source</h2>
+
+                        <div class="field">
+                            <label for="source-type-select">Source</label>
+                            <select id="source-type-select" class="input">
+                                <option value="0">Default Webcam (0)</option>
+                                <option value="1">External Webcam (1)</option>
+                                <option value="rtsp">RTSP Stream</option>
+                                <option value="http">HTTP MJPEG Stream</option>
+                            </select>
+                        </div>
+
+                        <div class="field" id="custom-url-group" style="display:none;">
+                            <label for="custom-source-input">Stream URL</label>
+                            <input type="text" id="custom-source-input" class="input" placeholder="rtsp://admin:pass@192.168.1.100:554/stream1">
+                            <span class="field-hint">Supports Hikvision, Dahua, Amcrest, TP-Link Tapo</span>
+                        </div>
+
+                        <div class="btn-row">
+                            <button class="btn btn-primary" id="btn-apply-source">Connect</button>
+                            <button class="btn btn-ghost" id="btn-reset-webcam">Reset (0)</button>
+                        </div>
+
+                        <hr class="sep">
+
+                        <div class="field">
+                            <div class="slider-row">
+                                <label for="conf-slider">Detection Sensitivity</label>
+                                <span class="slider-value" id="conf-val-label">50%</span>
+                            </div>
+                            <input type="range" id="conf-slider" min="0.1" max="0.95" step="0.05" value="0.5">
+                        </div>
+
+                        <div class="field">
+                            <label>Target Classes</label>
+                            <div class="chip-row" id="classes-container">
+                                <button type="button" class="chip active" data-class="person">Person</button>
+                                <button type="button" class="chip active" data-class="car">Car</button>
+                                <button type="button" class="chip active" data-class="motorcycle">Bike</button>
+                                <button type="button" class="chip active" data-class="bicycle">Bicycle</button>
+                                <button type="button" class="chip active" data-class="dog">Dog</button>
+                                <button type="button" class="chip active" data-class="cat">Cat</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL: Face ID -->
+                <div class="panel" id="panel-faceid">
+                    <div class="panel-box">
+                        <h2 class="panel-heading">Enroll Known Face</h2>
+                        <p class="panel-sub">Anyone not enrolled will be flagged as a stranger.</p>
+
+                        <div class="field">
+                            <label for="enroll-name-input">Person Name</label>
+                            <input type="text" id="enroll-name-input" class="input" placeholder="e.g. Rahul, Dad, Manager">
+                        </div>
+
+                        <button class="btn btn-primary btn-full" id="btn-enroll-face">Enroll From Camera</button>
+
+                        <hr class="sep">
+
+                        <h3 class="section-label">Enrolled Faces <span id="faces-count">0</span></h3>
+                        <div class="face-list" id="enrolled-faces-list">
+                            <span class="empty-msg">No faces enrolled yet</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL: Missing Person Finder -->
+                <div class="panel" id="panel-missing">
+                    <div class="panel-box">
+                        <h2 class="panel-heading">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                            Find Missing Person
+                        </h2>
+                        <p class="panel-sub">Upload a photo of the missing person. The system will continuously scan all CCTV feeds and alert you when a match is found.</p>
+
+                        <form id="missing-person-form" enctype="multipart/form-data">
+                            <div class="field">
+                                <label for="missing-name">Full Name</label>
+                                <input type="text" id="missing-name" class="input" placeholder="Person's full name" required>
+                            </div>
+
+                            <div class="field">
+                                <label for="missing-photo">Photo</label>
+                                <div class="upload-zone" id="upload-zone">
+                                    <input type="file" id="missing-photo" accept="image/*" hidden>
+                                    <div class="upload-placeholder" id="upload-placeholder">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                                        <span>Click or drag photo here</span>
+                                    </div>
+                                    <img id="upload-preview" class="upload-preview" style="display:none;" alt="Preview">
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label for="missing-desc">Description</label>
+                                <input type="text" id="missing-desc" class="input" placeholder="Age, clothing, features...">
+                            </div>
+
+                            <div class="field-row">
+                                <div class="field" style="flex:1;">
+                                    <label for="missing-contact">Contact No.</label>
+                                    <input type="text" id="missing-contact" class="input" placeholder="Phone number">
+                                </div>
+                                <div class="field" style="flex:1;">
+                                    <label for="missing-lastseen">Last Seen</label>
+                                    <input type="text" id="missing-lastseen" class="input" placeholder="e.g. Food Court">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-accent btn-full" id="btn-report-missing">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                                Start CCTV Search
+                            </button>
+                        </form>
+
+                        <hr class="sep">
+
+                        <h3 class="section-label">Active Searches <span id="missing-count">0</span></h3>
+                        <div class="missing-list" id="missing-persons-list">
+                            <span class="empty-msg">No active searches</span>
+                        </div>
+
+                        <div id="matches-section" style="display:none;">
+                            <hr class="sep">
+                            <h3 class="section-label section-label-alert">Recent Matches</h3>
+                            <div class="matches-list" id="matches-list"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL: AI Guard Chat -->
+                <div class="panel" id="panel-chat">
+                    <div class="panel-box chat-box">
+                        <div class="panel-heading-row">
+                            <h2 class="panel-heading">AI Guard</h2>
+                            <select id="chat-video-target" class="input chat-target-sel">
+                                <option value="live">Live Camera</option>
+                            </select>
+                        </div>
+
+                        <div class="chat-chips">
+                            <button type="button" class="chat-chip" data-msg="Describe scene">Describe Scene</button>
+                            <button type="button" class="chat-chip" data-msg="Is someone sitting at PC?">Person at PC?</button>
+                            <button type="button" class="chat-chip" data-msg="Who is there?">Who's There?</button>
+                            <button type="button" class="chat-chip" data-msg="Take a photo">Live Photo</button>
+                            <button type="button" class="chat-chip" data-msg="Safety and fall check">Safety Check</button>
+                        </div>
+
+                        <div class="chat-feed" id="chat-messages">
+                            <div class="msg msg-bot">
+                                <div class="msg-content">Hello! I'm monitoring your CCTV feed. Ask me anything.</div>
+                                <span class="msg-ts">Now</span>
+                            </div>
+                        </div>
+
+                        <form class="chat-input" id="chat-form">
+                            <input type="text" id="chat-input" class="input" placeholder="Ask AI Guard..." autocomplete="off">
+                            <button type="submit" class="btn btn-primary">Send</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- PANEL: Privacy -->
+                <div class="panel" id="panel-privacy">
+                    <div class="panel-box">
+                        <h2 class="panel-heading">Privacy Mode</h2>
+                        <p class="panel-sub">Anonymize identities while maintaining surveillance.</p>
+
+                        <div class="field">
+                            <label>Visual Style</label>
+                            <div class="option-list">
+                                <label class="option-card">
+                                    <input type="radio" name="privacy-style" value="depth" checked>
+                                    <div class="option-info">
+                                        <strong>Depth Map</strong>
+                                        <small>3D depth heat-map — hides identities, preserves motion</small>
+                                    </div>
+                                </label>
+                                <label class="option-card">
+                                    <input type="radio" name="privacy-style" value="blur">
+                                    <div class="option-info">
+                                        <strong>Gaussian Blur</strong>
+                                        <small>Soft blur on detected faces and bodies</small>
+                                    </div>
+                                </label>
+                                <label class="option-card">
+                                    <input type="radio" name="privacy-style" value="silhouette">
+                                    <div class="option-info">
+                                        <strong>Silhouette</strong>
+                                        <small>Solid dark mask on person boundaries</small>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <hr class="sep">
+
+                        <div class="toggle-row">
+                            <div>
+                                <label for="toggle-clear-telegram">Clear Telegram Evidence</label>
+                                <small>Send unblurred photos to Telegram for identification</small>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" id="toggle-clear-telegram" checked>
+                                <span class="toggle-track"></span>
+                            </label>
+                        </div>
+
+                        <button class="btn btn-primary btn-full" id="btn-activate-privacy" style="margin-top:12px;">Activate Privacy Mode</button>
+                    </div>
+                </div>
+
+                <!-- PANEL: Alerts -->
+                <div class="panel" id="panel-alerts">
+                    <div class="panel-box">
+                        <h2 class="panel-heading">Alert Channels</h2>
+
+                        <div class="channel-tabs">
+                            <button type="button" class="channel-tab active" data-channel="tg">Telegram</button>
+                            <button type="button" class="channel-tab" data-channel="dc">Discord</button>
+                            <button type="button" class="channel-tab" data-channel="sl">Slack</button>
+                            <button type="button" class="channel-tab" data-channel="ha">Home Asst.</button>
+                            <button type="button" class="channel-tab" data-channel="gemini">Gemini AI</button>
+                        </div>
+
+                        <!-- Telegram -->
+                        <div class="channel-pane active" id="pane-channel-tg">
+                            <div class="toggle-row">
+                                <label for="toggle-telegram">Enable Telegram</label>
+                                <label class="toggle"><input type="checkbox" id="toggle-telegram"><span class="toggle-track"></span></label>
+                            </div>
+                            <div class="field">
+                                <label for="telegram-token-input">Bot Token</label>
+                                <input type="text" id="telegram-token-input" class="input" placeholder="123456:ABC-DEF...">
+                            </div>
+                            <div class="field">
+                                <div class="label-row">
+                                    <label for="telegram-chat-input">Chat ID</label>
+                                    <button type="button" class="btn-link" id="btn-detect-chat-id">Auto-Detect</button>
+                                </div>
+                                <input type="text" id="telegram-chat-input" class="input" placeholder="e.g. 123456789">
+                            </div>
+                            <div class="btn-row">
+                                <button class="btn btn-ghost" id="btn-test-telegram">Test</button>
+                                <button class="btn btn-primary" id="btn-save-telegram">Save</button>
+                            </div>
+                        </div>
+
+                        <!-- Discord -->
+                        <div class="channel-pane" id="pane-channel-dc" style="display:none;">
+                            <div class="toggle-row">
+                                <label for="toggle-discord">Enable Discord</label>
+                                <label class="toggle"><input type="checkbox" id="toggle-discord"><span class="toggle-track"></span></label>
+                            </div>
+                            <div class="field">
+                                <label for="discord-webhook-input">Webhook URL</label>
+                                <input type="text" id="discord-webhook-input" class="input" placeholder="https://discord.com/api/webhooks/...">
+                            </div>
+                            <div class="btn-row">
+                                <button class="btn btn-ghost" id="btn-test-discord">Test</button>
+                                <button class="btn btn-primary" id="btn-save-discord">Save</button>
+                            </div>
+                        </div>
+
+                        <!-- Slack -->
+                        <div class="channel-pane" id="pane-channel-sl" style="display:none;">
+                            <div class="toggle-row">
+                                <label for="toggle-slack">Enable Slack</label>
+                                <label class="toggle"><input type="checkbox" id="toggle-slack"><span class="toggle-track"></span></label>
+                            </div>
+                            <div class="field">
+                                <label for="slack-webhook-input">Webhook URL</label>
+                                <input type="text" id="slack-webhook-input" class="input" placeholder="https://hooks.slack.com/services/...">
+                            </div>
+                            <div class="btn-row">
+                                <button class="btn btn-ghost" id="btn-test-slack">Test</button>
+                                <button class="btn btn-primary" id="btn-save-slack">Save</button>
+                            </div>
+                        </div>
+
+                        <!-- Home Assistant -->
+                        <div class="channel-pane" id="pane-channel-ha" style="display:none;">
+                            <div class="toggle-row">
+                                <label for="toggle-ha">Enable Home Assistant</label>
+                                <label class="toggle"><input type="checkbox" id="toggle-ha"><span class="toggle-track"></span></label>
+                            </div>
+                            <div class="field">
+                                <label for="ha-webhook-input">Webhook URL</label>
+                                <input type="text" id="ha-webhook-input" class="input" placeholder="http://homeassistant.local:8123/api/webhook/cctv">
+                            </div>
+                            <button class="btn btn-primary btn-full" id="btn-save-ha">Save</button>
+                        </div>
+
+                        <!-- Gemini AI -->
+                        <div class="channel-pane" id="pane-channel-gemini" style="display:none;">
+                            <div class="field">
+                                <label for="gemini-api-input">Gemini API Key</label>
+                                <input type="password" id="gemini-api-input" class="input" placeholder="AIzaSy...">
+                                <small class="field-hint">Enables smart conversational AI for Live and Recorded Video analysis.</small>
+                            </div>
+                            <button class="btn btn-primary btn-full" id="btn-save-gemini">Save</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL: Timeline -->
+                <div class="panel" id="panel-timeline">
+                    <div class="panel-box">
+                        <div class="panel-heading-row">
+                            <h2 class="panel-heading">Activity Log</h2>
+                            <span class="online-dot">Live</span>
+                        </div>
+                        <div class="event-feed" id="event-stream">
+                            <div class="event-item event-placeholder">Monitoring feed…</div>
+                        </div>
+                    </div>
+                </div>
+
+            </aside>
+        </main>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

@@ -50,3 +50,15 @@ volumes
 
 # ─── Project Specific ────────────────────────────────
 src/yolov7_reid/src/models/mgn_R50-ibn.onnx
+
+# ─── CCTV Webapp Local Secrets & Media ──────────────
+webapp/config.json
+webapp/recordings/*
+!webapp/recordings/.gitkeep
+webapp/snapshots/*
+!webapp/snapshots/.gitkeep
+webapp/enrolled_faces/*
+!webapp/enrolled_faces/.gitkeep
+webapp/missing_persons/*
+!webapp/missing_persons/.gitkeep
+

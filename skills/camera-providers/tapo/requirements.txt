@@ -1,3 +1,0 @@
-# Tapo Camera Provider
-pytapo>=3.3.0
-onvif-zeep>=0.2.12

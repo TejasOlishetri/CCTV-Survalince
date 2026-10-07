@@ -1,3 +1,0 @@
-# Reolink Camera Provider
-reolink-aio>=0.9.0
-aiohttp>=3.9.0

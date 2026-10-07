@@ -1,0 +1,48 @@
+{
+  "telegram_token": "",
+  "telegram_chat_id": "",
+  "telegram_enabled": false,
+  "discord_webhook_url": "",
+  "discord_enabled": false,
+  "slack_webhook_url": "",
+  "slack_enabled": false,
+  "ha_webhook_url": "",
+  "ha_enabled": false,
+  "gemini_api_key": "",
+  "alarm_sound_enabled": true,
+  "confidence": 0.5,
+  "active_mode": "surveillance",
+  "selected_classes": [
+    "person",
+    "car",
+    "motorcycle",
+    "bicycle",
+    "dog",
+    "cat"
+  ],
+  "privacy_blur": false,
+  "privacy_style": "blur",
+  "telegram_clear_evidence": true,
+  "parking_slots": [
+    {
+      "id": 1,
+      "name": "Slot A-1",
+      "box": [40, 180, 180, 420]
+    },
+    {
+      "id": 2,
+      "name": "Slot A-2",
+      "box": [190, 180, 330, 420]
+    },
+    {
+      "id": 3,
+      "name": "Slot A-3",
+      "box": [340, 180, 480, 420]
+    },
+    {
+      "id": 4,
+      "name": "Slot A-4",
+      "box": [490, 180, 630, 420]
+    }
+  ]
+}
