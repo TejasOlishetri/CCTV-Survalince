@@ -52,6 +52,11 @@ export default function VideoPlayer({ status, activeMode }) {
             <span className="hud-pill">
               <span className="status-dot-green"></span>
               CAM {status?.source ?? '0'} • {activeMode?.toUpperCase()}
+              {Boolean(status?.privacy_blur) && (
+                <span style={{ color: '#10b981', marginLeft: 6, fontWeight: 700, letterSpacing: '0.5px' }}>
+                  • PRIVACY ON
+                </span>
+              )}
             </span>
             <span className="hud-pill" style={{ color: '#cbd5e1' }}>
               {status?.fps || 0} FPS | {status?.latency_ms || 0}ms

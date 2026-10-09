@@ -159,16 +159,26 @@ export default function SettingsModal({ isOpen, onClose }) {
             </div>
 
             <div style={{ padding: 10, borderRadius: 8, background: 'var(--bg-pill)', border: '1px solid var(--border-subtle)' }}>
-              <label style={{ fontSize: 11, color: 'var(--text-muted)', display: 'block', marginBottom: 4 }}>
-                Privacy Blur Style
-              </label>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                <label style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+                  Privacy Blur Style
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer', fontSize: 11, color: config.privacy_blur ? 'var(--emerald)' : 'var(--text-muted)' }}>
+                  <input
+                    type="checkbox"
+                    checked={Boolean(config.privacy_blur)}
+                    onChange={(e) => handleChange('privacy_blur', e.target.checked)}
+                  />
+                  <span>Active</span>
+                </label>
+              </div>
               <select
                 value={config.privacy_style || 'blur'}
                 onChange={(e) => handleChange('privacy_style', e.target.value)}
                 className="form-input"
               >
-                <option value="blur">Gaussian Blur</option>
-                <option value="silhouette">Silhouette</option>
+                <option value="blur">Gaussian Blur (Faces/Persons)</option>
+                <option value="silhouette">Silhouette Dark Mask</option>
                 <option value="depth">Depth ColorMap</option>
               </select>
             </div>

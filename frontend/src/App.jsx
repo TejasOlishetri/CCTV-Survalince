@@ -25,6 +25,7 @@ export default function App() {
   const [source, setSource] = useState('0');
   const [isRecording, setIsRecording] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
+  const [privacyBlur, setPrivacyBlur] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [activeRightTab, setActiveRightTab] = useState('chat'); // 'chat' | 'missing' | 'faces' | 'events'
   const [recordings, setRecordings] = useState([]);
@@ -48,6 +49,7 @@ export default function App() {
       setStatus(data);
       if (data.active_mode) setActiveMode(data.active_mode);
       if (data.source) setSource(data.source);
+      if (data.privacy_blur !== undefined) setPrivacyBlur(Boolean(data.privacy_blur));
       setIsRecording(Boolean(data.is_recording));
     } catch (e) {}
   };
@@ -127,6 +129,19 @@ export default function App() {
     } catch (e) {}
   };
 
+  const handleTogglePrivacy = async () => {
+    try {
+      const res = await fetch('/api/privacy/toggle', { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        setPrivacyBlur(Boolean(data.privacy_blur));
+        fetchStatus();
+      }
+    } catch (e) {
+      console.error('Failed to toggle privacy filter:', e);
+    }
+  };
+
   const tabs = [
     { id: 'chat', label: 'AI Guard (Gemini)', icon: Bot },
     { id: 'missing', label: 'Missing Persons', icon: UserSearch },
@@ -151,6 +166,8 @@ export default function App() {
         onOpenSettings={() => setIsSettingsOpen(true)}
         theme={theme}
         toggleTheme={toggleTheme}
+        privacyBlur={privacyBlur}
+        onTogglePrivacy={handleTogglePrivacy}
       />
 
       {/* Main Grid: Video Player (Left/Center) + Smart Panels (Right) */}

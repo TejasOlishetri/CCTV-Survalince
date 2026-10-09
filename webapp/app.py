@@ -51,10 +51,10 @@ DEFAULT_CONFIG = {
     "gemini_api_key": "",
     "alarm_sound_enabled": True,
     "confidence": 0.5,
-    "active_mode": "surveillance",  # surveillance | fall_detection | parking | privacy
+    "active_mode": "surveillance",  # surveillance | fall_detection | parking
     "selected_classes": ["person", "car", "motorcycle", "bicycle", "dog", "cat"],
     "privacy_blur": False,
-    "privacy_style": "depth",
+    "privacy_style": "blur",
     "telegram_clear_evidence": True,
     "parking_slots": [
         {"id": 1, "name": "Slot A-1", "box": [40, 180, 180, 420]},
@@ -982,9 +982,18 @@ def get_status():
         "is_recording": deep_camera.is_recording,
         "record_id": deep_camera.record_id,
         "active_mode": system_config.get("active_mode", "surveillance"),
+        "privacy_blur": bool(system_config.get("privacy_blur", False)),
         "confidence": system_config.get("confidence", 0.5),
         "recent_events": deep_camera.recent_events[:15]
     })
+
+@app.route('/api/privacy/toggle', methods=['POST'])
+def toggle_privacy():
+    global system_config
+    new_state = not bool(system_config.get("privacy_blur", False))
+    system_config["privacy_blur"] = new_state
+    save_config(system_config)
+    return jsonify({"success": True, "privacy_blur": new_state})
 
 @app.route('/api/config', methods=['GET', 'POST'])
 def manage_config():
@@ -1020,15 +1029,24 @@ def snapshot():
 
 @app.route('/snapshots/<path:filename>')
 def get_snapshot(filename):
-    return send_file(SNAPSHOTS_DIR / filename)
+    p = SNAPSHOTS_DIR / filename
+    if not p.exists() or not p.is_file():
+        return jsonify({"error": "File not found"}), 404
+    return send_file(p)
 
 @app.route('/enrolled_faces/<path:filename>')
 def get_enrolled_face(filename):
-    return send_file(FACES_DIR / filename)
+    p = FACES_DIR / filename
+    if not p.exists() or not p.is_file():
+        return jsonify({"error": "File not found"}), 404
+    return send_file(p)
 
 @app.route('/missing_persons/<path:filename>')
 def get_missing_person_photo(filename):
-    return send_file(MISSING_DIR / filename)
+    p = MISSING_DIR / filename
+    if not p.exists() or not p.is_file():
+        return jsonify({"error": "File not found"}), 404
+    return send_file(p)
 
 # ==========================================
 # MISSING PERSON FINDER API

@@ -204,11 +204,14 @@ export default function MissingPersonFinder({ matches }) {
             {profileList.map(([pName, pInfo]) => (
               <div key={pName} className="target-card">
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <img
-                    src={`/missing_persons/${pInfo.photo}`}
-                    alt={pName}
-                    className="target-card-thumb"
-                  />
+                  {pInfo?.photo && (
+                    <img
+                      src={`/missing_persons/${pInfo.photo}`}
+                      alt={pName}
+                      className="target-card-thumb"
+                      onError={(e) => { e.target.style.display = 'none'; }}
+                    />
+                  )}
                   <div>
                     <h5 style={{ fontWeight: 700, color: 'var(--text-main)', fontSize: 13 }}>{pName}</h5>
                     <p style={{ fontSize: 10, color: 'var(--text-muted)' }}>{pInfo.description || 'No notes'}</p>

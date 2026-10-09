@@ -8,6 +8,7 @@ import {
   Sliders, 
   AlertTriangle,
   Car,
+  Eye,
   EyeOff,
   Sun,
   Moon
@@ -26,13 +27,14 @@ export default function Header({
   onToggleMute, 
   onOpenSettings,
   theme,
-  toggleTheme
+  toggleTheme,
+  privacyBlur,
+  onTogglePrivacy
 }) {
   const modes = [
     { id: 'surveillance', label: 'Surveillance', icon: Shield, color: '#22d3ee' },
     { id: 'fall_detection', label: 'Fall Safety', icon: AlertTriangle, color: '#f43f5e' },
     { id: 'parking', label: 'Smart Parking', icon: Car, color: '#f59e0b' },
-    { id: 'privacy', label: 'Privacy Mask', icon: EyeOff, color: '#10b981' },
   ];
 
   return (
@@ -114,6 +116,20 @@ export default function Header({
           title={isMuted ? 'Alarm Siren Muted' : 'Alarm Siren Active'}
         >
           {isMuted ? <VolumeX style={{ width: 15, height: 15 }} /> : <Volume2 style={{ width: 15, height: 15 }} />}
+        </button>
+
+        {/* Privacy Filter Toggle Button */}
+        <button
+          onClick={onTogglePrivacy}
+          className={`privacy-toggle-btn ${privacyBlur ? 'active-privacy' : ''}`}
+          title={privacyBlur ? "Privacy Filter Active (Persons & Faces blurred) — Click to Disable" : "Privacy Filter Disabled — Click to Enable"}
+        >
+          {privacyBlur ? (
+            <EyeOff style={{ width: 14, height: 14, color: '#10b981' }} />
+          ) : (
+            <Eye style={{ width: 14, height: 14, color: 'var(--text-muted)' }} />
+          )}
+          <span>{privacyBlur ? 'Privacy: ON' : 'Privacy Filter'}</span>
         </button>
 
         {/* Theme Switcher Toggle */}
