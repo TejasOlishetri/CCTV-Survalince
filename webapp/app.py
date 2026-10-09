@@ -1191,20 +1191,36 @@ def get_faces():
 
 @app.route('/api/enroll_face', methods=['POST'])
 def enroll_face():
-    data = request.get_json() or {}
-    name = data.get("name", "").strip()
+    file = None
+    if request.is_json:
+        data = request.get_json() or {}
+        name = data.get("name", "").strip()
+    else:
+        name = request.form.get("name", "").strip()
+        file = request.files.get("photo")
+
     if not name:
         return jsonify({"success": False, "error": "Name is required"}), 400
 
-    # Grab current raw frame
-    with deep_camera.lock:
-        if deep_camera.current_raw_frame is None:
-            return jsonify({"success": False, "error": "No camera frame available"}), 500
-        frame_copy = deep_camera.current_raw_frame.copy()
+    if file and file.filename:
+        try:
+            file_bytes = np.frombuffer(file.read(), np.uint8)
+            img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+            if img is None:
+                return jsonify({"success": False, "error": "Could not decode uploaded photo"}), 400
+            crop = img
+        except Exception as e:
+            return jsonify({"success": False, "error": f"Error reading photo: {e}"}), 400
+    else:
+        # Grab current raw frame from camera
+        with deep_camera.lock:
+            if deep_camera.current_raw_frame is None:
+                return jsonify({"success": False, "error": "No camera frame available"}), 500
+            frame_copy = deep_camera.current_raw_frame.copy()
 
-    # Detect face or crop central region
-    h, w, _ = frame_copy.shape
-    crop = frame_copy[int(h*0.2):int(h*0.8), int(w*0.3):int(w*0.7)]
+        # Detect face or crop central region
+        h, w, _ = frame_copy.shape
+        crop = frame_copy[int(h*0.2):int(h*0.8), int(w*0.3):int(w*0.7)]
 
     ok, msg = deep_camera.enroll_face(name, crop)
     return jsonify({"success": ok, "message": msg})
@@ -1212,9 +1228,11 @@ def enroll_face():
 @app.route('/api/delete_face', methods=['POST'])
 def delete_face():
     data = request.get_json() or {}
-    name = data.get("name", "")
+    name = data.get("name", "").strip()
+    if not name:
+        return jsonify({"success": False, "error": "Name is required"}), 400
     ok = deep_camera.delete_face(name)
-    return jsonify({"success": ok})
+    return jsonify({"success": ok, "message": f"Deleted Face ID for '{name}'" if ok else "Face not found"})
 
 @app.route('/api/test_telegram', methods=['POST'])
 def test_telegram():
