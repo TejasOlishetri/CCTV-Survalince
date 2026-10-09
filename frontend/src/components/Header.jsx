@@ -1,4 +1,3 @@
-import React from 'react';
 import { 
   Shield, 
   Video, 
@@ -9,7 +8,9 @@ import {
   Sliders, 
   AlertTriangle,
   Car,
-  EyeOff
+  EyeOff,
+  Sun,
+  Moon
 } from 'lucide-react';
 
 export default function Header({ 
@@ -23,7 +24,9 @@ export default function Header({
   onTakeSnapshot, 
   isMuted, 
   onToggleMute, 
-  onOpenSettings 
+  onOpenSettings,
+  theme,
+  toggleTheme
 }) {
   const modes = [
     { id: 'surveillance', label: 'Surveillance', icon: Shield, color: '#22d3ee' },
@@ -111,6 +114,20 @@ export default function Header({
           title={isMuted ? 'Alarm Siren Muted' : 'Alarm Siren Active'}
         >
           {isMuted ? <VolumeX style={{ width: 15, height: 15 }} /> : <Volume2 style={{ width: 15, height: 15 }} />}
+        </button>
+
+        {/* Theme Switcher Toggle */}
+        <button
+          onClick={toggleTheme}
+          className="btn-icon-square theme-toggle-btn"
+          title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
+          aria-label="Toggle Theme"
+        >
+          {theme === 'dark' ? (
+            <Sun style={{ width: 16, height: 16, color: '#f59e0b' }} />
+          ) : (
+            <Moon style={{ width: 16, height: 16, color: '#4f46e5' }} />
+          )}
         </button>
 
         {/* Settings Button */}

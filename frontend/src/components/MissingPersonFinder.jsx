@@ -98,22 +98,22 @@ export default function MissingPersonFinder({ matches }) {
   return (
     <div className="missing-panel">
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: 10 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(244,63,94,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <UserSearch style={{ width: 16, height: 16, color: '#f43f5e' }} />
+            <UserSearch style={{ width: 16, height: 16, color: 'var(--rose)' }} />
           </div>
-          <span style={{ fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+          <span style={{ fontWeight: 700, fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-main)' }}>
             Missing Person Search Registry
           </span>
         </div>
-        <span style={{ fontSize: 11, fontFamily: 'monospace', padding: '2px 8px', borderRadius: 4, background: 'rgba(244,63,94,0.15)', color: '#fda4af', border: '1px solid rgba(244,63,94,0.3)' }}>
+        <span style={{ fontSize: 11, fontFamily: 'monospace', padding: '2px 8px', borderRadius: 4, background: 'rgba(244,63,94,0.15)', color: 'var(--rose)', border: '1px solid rgba(244,63,94,0.3)' }}>
           {profileList.length} Active
         </span>
       </div>
 
       {msg && (
-        <div style={{ padding: '8px 12px', borderRadius: 8, fontSize: 11, display: 'flex', alignItems: 'center', gap: 8, background: msg.type === 'success' ? 'rgba(16,185,129,0.15)' : 'rgba(244,63,94,0.15)', color: msg.type === 'success' ? '#6ee7b7' : '#fda4af', border: `1px solid ${msg.type === 'success' ? 'rgba(16,185,129,0.3)' : 'rgba(244,63,94,0.3)'}` }}>
+        <div style={{ padding: '8px 12px', borderRadius: 8, fontSize: 11, display: 'flex', alignItems: 'center', gap: 8, background: msg.type === 'success' ? 'rgba(16,185,129,0.15)' : 'rgba(244,63,94,0.15)', color: msg.type === 'success' ? 'var(--emerald)' : 'var(--rose)', border: `1px solid ${msg.type === 'success' ? 'rgba(16,185,129,0.3)' : 'rgba(244,63,94,0.3)'}` }}>
           {msg.type === 'success' ? <CheckCircle style={{ width: 14, height: 14 }} /> : <AlertTriangle style={{ width: 14, height: 14 }} />}
           <span>{msg.text}</span>
         </div>
@@ -123,7 +123,7 @@ export default function MissingPersonFinder({ matches }) {
       <form onSubmit={handleSubmit} className="upload-form-grid">
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           <div>
-            <label style={{ fontSize: 10, color: '#94a3b8', display: 'block', marginBottom: 3 }}>Target Name *</label>
+            <label style={{ fontSize: 10, color: 'var(--text-muted)', display: 'block', marginBottom: 3 }}>Target Name *</label>
             <input
               type="text"
               value={name}
@@ -135,7 +135,7 @@ export default function MissingPersonFinder({ matches }) {
           </div>
 
           <div>
-            <label style={{ fontSize: 10, color: '#94a3b8', display: 'block', marginBottom: 3 }}>Contact Phone</label>
+            <label style={{ fontSize: 10, color: 'var(--text-muted)', display: 'block', marginBottom: 3 }}>Contact Phone</label>
             <input
               type="text"
               value={contact}
@@ -146,7 +146,7 @@ export default function MissingPersonFinder({ matches }) {
           </div>
 
           <div>
-            <label style={{ fontSize: 10, color: '#94a3b8', display: 'block', marginBottom: 3 }}>Appearance Details</label>
+            <label style={{ fontSize: 10, color: 'var(--text-muted)', display: 'block', marginBottom: 3 }}>Appearance Details</label>
             <input
               type="text"
               value={description}
@@ -170,12 +170,12 @@ export default function MissingPersonFinder({ matches }) {
             {preview ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <img src={preview} alt="Preview" style={{ width: 50, height: 50, borderRadius: 8, objectFit: 'cover' }} />
-                <span style={{ fontSize: 11, color: '#e2e8f0' }}>Click to change photo</span>
+                <span style={{ fontSize: 11, color: 'var(--text-main)' }}>Click to change photo</span>
               </div>
             ) : (
               <>
-                <Upload style={{ width: 20, height: 20, color: '#94a3b8' }} />
-                <span style={{ fontSize: 11, color: '#94a3b8' }}>Upload Headshot Photo</span>
+                <Upload style={{ width: 20, height: 20, color: 'var(--text-muted)' }} />
+                <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Upload Headshot Photo</span>
               </>
             )}
           </div>
@@ -192,11 +192,11 @@ export default function MissingPersonFinder({ matches }) {
 
       {/* Target Cards Grid */}
       <div>
-        <h4 style={{ fontSize: 11, textTransform: 'uppercase', color: '#94a3b8', fontWeight: 700, marginBottom: 8 }}>
+        <h4 style={{ fontSize: 11, textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 700, marginBottom: 8 }}>
           Active Missing Persons Being Tracked
         </h4>
         {profileList.length === 0 ? (
-          <p style={{ color: '#64748b', fontStyle: 'italic', padding: 12, background: 'rgba(255,255,255,0.02)', borderRadius: 8, textAlign: 'center' }}>
+          <p style={{ color: 'var(--text-dark)', fontStyle: 'italic', padding: 12, background: 'var(--bg-pill)', borderRadius: 8, textAlign: 'center' }}>
             No missing persons registered right now.
           </p>
         ) : (
@@ -210,10 +210,10 @@ export default function MissingPersonFinder({ matches }) {
                     className="target-card-thumb"
                   />
                   <div>
-                    <h5 style={{ fontWeight: 700, color: '#f8fafc', fontSize: 13 }}>{pName}</h5>
-                    <p style={{ fontSize: 10, color: '#94a3b8' }}>{pInfo.description || 'No notes'}</p>
+                    <h5 style={{ fontWeight: 700, color: 'var(--text-main)', fontSize: 13 }}>{pName}</h5>
+                    <p style={{ fontSize: 10, color: 'var(--text-muted)' }}>{pInfo.description || 'No notes'}</p>
                     {pInfo.contact && (
-                      <p style={{ fontSize: 10, color: '#fda4af', fontFamily: 'monospace' }}>
+                      <p style={{ fontSize: 10, color: 'var(--rose)', fontFamily: 'monospace' }}>
                         📞 {pInfo.contact}
                       </p>
                     )}
@@ -221,7 +221,7 @@ export default function MissingPersonFinder({ matches }) {
                 </div>
                 <button
                   onClick={() => handleDelete(pName)}
-                  style={{ background: 'transparent', color: '#64748b', padding: 6, borderRadius: 6 }}
+                  style={{ background: 'transparent', color: 'var(--text-dark)', padding: 6, borderRadius: 6 }}
                   title="Remove"
                 >
                   <Trash2 style={{ width: 14, height: 14 }} />
@@ -234,8 +234,8 @@ export default function MissingPersonFinder({ matches }) {
 
       {/* Real-time Match Sightings */}
       {matches && matches.length > 0 && (
-        <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 10 }}>
-          <h4 style={{ fontSize: 11, color: '#f59e0b', fontWeight: 700, marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}>
+        <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 10 }}>
+          <h4 style={{ fontSize: 11, color: 'var(--amber)', fontWeight: 700, marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}>
             <AlertTriangle style={{ width: 14, height: 14 }} />
             Live Facial ReID Match Sightings
           </h4>
@@ -243,10 +243,10 @@ export default function MissingPersonFinder({ matches }) {
             {matches.map((m, idx) => (
               <div key={idx} style={{ padding: '6px 10px', borderRadius: 6, background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.25)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                  <strong style={{ color: '#fcd34d' }}>{m.name}</strong>
-                  <span style={{ color: '#94a3b8', marginLeft: 8 }}>Match: {Math.round(m.similarity * 100)}%</span>
+                  <strong style={{ color: 'var(--amber)' }}>{m.name}</strong>
+                  <span style={{ color: 'var(--text-muted)', marginLeft: 8 }}>Match: {Math.round(m.similarity * 100)}%</span>
                 </div>
-                <span style={{ fontSize: 10, fontFamily: 'monospace', color: '#94a3b8' }}>{m.time}</span>
+                <span style={{ fontSize: 10, fontFamily: 'monospace', color: 'var(--text-muted)' }}>{m.time}</span>
               </div>
             ))}
           </div>

@@ -131,7 +131,7 @@ export default function AiGuardChat({ recordings }) {
       let formatted = line
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/\*(.*?)\*/g, '<em>$1</em>')
-        .replace(/`([^`]+)`/g, '<code style="background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:4px;color:#38bdf8;font-family:monospace;">$1</code>');
+        .replace(/`([^`]+)`/g, '<code style="background:var(--bg-pill);padding:2px 6px;border-radius:4px;color:var(--cyan);font-family:monospace;border:1px solid var(--border-subtle);">$1</code>');
       return (
         <span 
           key={idx} 
@@ -196,7 +196,7 @@ export default function AiGuardChat({ recordings }) {
               <div>{renderFormattedText(m.text)}</div>
               {m.photoUrl && (
                 <div 
-                  style={{ marginTop: 8, borderRadius: 8, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.2)', cursor: 'pointer' }}
+                  style={{ marginTop: 8, borderRadius: 8, overflow: 'hidden', border: '1px solid var(--border-medium)', cursor: 'pointer' }}
                   onClick={() => window.open(m.photoUrl, '_blank')}
                 >
                   <img src={m.photoUrl} alt="CCTV Snapshot" style={{ maxHeight: 180, width: '100%', objectFit: 'cover' }} />

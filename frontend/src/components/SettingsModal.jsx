@@ -47,19 +47,19 @@ export default function SettingsModal({ isOpen, onClose }) {
     <div className="modal-overlay">
       <div className="modal-dialog">
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: 10 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 34, height: 34, borderRadius: 10, background: 'rgba(6,182,212,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Sliders style={{ width: 18, height: 18, color: '#22d3ee' }} />
+              <Sliders style={{ width: 18, height: 18, color: 'var(--cyan)' }} />
             </div>
             <div>
-              <h3 style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>System & AI Configuration</h3>
-              <p style={{ fontSize: 11, color: '#94a3b8' }}>Gemini Intelligence & CCTV Notifications</p>
+              <h3 style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-main)' }}>System & AI Configuration</h3>
+              <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>Gemini Intelligence & CCTV Notifications</p>
             </div>
           </div>
           <button 
             onClick={onClose}
-            style={{ background: 'transparent', color: '#94a3b8', padding: 6, borderRadius: 6 }}
+            style={{ background: 'transparent', color: 'var(--text-muted)', padding: 6, borderRadius: 6 }}
           >
             <X style={{ width: 18, height: 18 }} />
           </button>
@@ -67,12 +67,12 @@ export default function SettingsModal({ isOpen, onClose }) {
 
         <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {/* Gemini AI Key */}
-          <div style={{ padding: 12, borderRadius: 10, background: 'rgba(4,7,13,0.6)', border: '1px solid rgba(6,182,212,0.3)', display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#22d3ee', fontWeight: 600 }}>
+          <div style={{ padding: 12, borderRadius: 10, background: 'var(--bg-pill)', border: '1px solid var(--border-cyan)', display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--cyan)', fontWeight: 600 }}>
               <Key style={{ width: 15, height: 15 }} />
               <span>Google Gemini AI API Key</span>
             </div>
-            <p style={{ fontSize: 11, color: '#94a3b8' }}>
+            <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>
               Used by AI Guard Chatbot to analyze live feed & recordings.
             </p>
             <input
@@ -86,13 +86,13 @@ export default function SettingsModal({ isOpen, onClose }) {
           </div>
 
           {/* Telegram Alerts */}
-          <div style={{ padding: 12, borderRadius: 10, background: 'rgba(4,7,13,0.6)', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ padding: 12, borderRadius: 10, background: 'var(--bg-pill)', border: '1px solid var(--border-subtle)', display: 'flex', flexDirection: 'column', gap: 8 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#e2e8f0', fontWeight: 600 }}>
-                <Send style={{ width: 15, height: 15, color: '#22d3ee' }} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--text-main)', fontWeight: 600 }}>
+                <Send style={{ width: 15, height: 15, color: 'var(--cyan)' }} />
                 <span>Telegram Alerts</span>
               </div>
-              <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: 11, color: '#94a3b8' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: 11, color: 'var(--text-muted)' }}>
                 <input
                   type="checkbox"
                   checked={config.telegram_enabled || false}
@@ -120,9 +120,9 @@ export default function SettingsModal({ isOpen, onClose }) {
           </div>
 
           {/* Webhooks */}
-          <div style={{ padding: 12, borderRadius: 10, background: 'rgba(4,7,13,0.6)', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#e2e8f0', fontWeight: 600 }}>
-              <Bell style={{ width: 15, height: 15, color: '#818cf8' }} />
+          <div style={{ padding: 12, borderRadius: 10, background: 'var(--bg-pill)', border: '1px solid var(--border-subtle)', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--text-main)', fontWeight: 600 }}>
+              <Bell style={{ width: 15, height: 15, color: 'var(--indigo)' }} />
               <span>Webhooks (Discord & Slack)</span>
             </div>
             <input
@@ -143,8 +143,8 @@ export default function SettingsModal({ isOpen, onClose }) {
 
           {/* Sliders */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-            <div style={{ padding: 10, borderRadius: 8, background: 'rgba(4,7,13,0.6)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <label style={{ fontSize: 11, color: '#cbd5e1', display: 'block', marginBottom: 4 }}>
+            <div style={{ padding: 10, borderRadius: 8, background: 'var(--bg-pill)', border: '1px solid var(--border-subtle)' }}>
+              <label style={{ fontSize: 11, color: 'var(--text-muted)', display: 'block', marginBottom: 4 }}>
                 Confidence: {Math.round((config.confidence || 0.5) * 100)}%
               </label>
               <input
@@ -158,8 +158,8 @@ export default function SettingsModal({ isOpen, onClose }) {
               />
             </div>
 
-            <div style={{ padding: 10, borderRadius: 8, background: 'rgba(4,7,13,0.6)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <label style={{ fontSize: 11, color: '#cbd5e1', display: 'block', marginBottom: 4 }}>
+            <div style={{ padding: 10, borderRadius: 8, background: 'var(--bg-pill)', border: '1px solid var(--border-subtle)' }}>
+              <label style={{ fontSize: 11, color: 'var(--text-muted)', display: 'block', marginBottom: 4 }}>
                 Privacy Blur Style
               </label>
               <select
@@ -177,7 +177,7 @@ export default function SettingsModal({ isOpen, onClose }) {
           {/* Save Button */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 6 }}>
             {saveSuccess ? (
-              <span style={{ color: '#34d399', fontSize: 11, display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ color: 'var(--emerald)', fontSize: 11, display: 'flex', alignItems: 'center', gap: 6 }}>
                 <Check style={{ width: 14, height: 14 }} /> Saved!
               </span>
             ) : <span />}
@@ -186,14 +186,14 @@ export default function SettingsModal({ isOpen, onClose }) {
               <button
                 type="button"
                 onClick={onClose}
-                style={{ padding: '8px 14px', borderRadius: 8, background: 'rgba(255,255,255,0.08)', color: '#cbd5e1' }}
+                style={{ padding: '8px 14px', borderRadius: 8, background: 'var(--bg-pill)', color: 'var(--text-muted)', border: '1px solid var(--border-subtle)' }}
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSaving}
-                style={{ padding: '8px 18px', borderRadius: 8, background: 'linear-gradient(135deg, #06b6d4, #0891b2)', color: '#040810', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}
+                style={{ padding: '8px 18px', borderRadius: 8, background: 'linear-gradient(135deg, #06b6d4, #0891b2)', color: '#ffffff', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}
               >
                 <Save style={{ width: 14, height: 14 }} />
                 <span>{isSaving ? 'Saving...' : 'Save Settings'}</span>

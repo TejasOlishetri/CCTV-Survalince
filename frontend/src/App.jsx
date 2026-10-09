@@ -17,6 +17,9 @@ import {
 } from 'lucide-react';
 
 export default function App() {
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('deepcamera_theme') || 'dark';
+  });
   const [status, setStatus] = useState(null);
   const [activeMode, setActiveMode] = useState('surveillance');
   const [source, setSource] = useState('0');
@@ -26,6 +29,16 @@ export default function App() {
   const [activeRightTab, setActiveRightTab] = useState('chat'); // 'chat' | 'missing' | 'faces' | 'events'
   const [recordings, setRecordings] = useState([]);
   const [snapshots, setSnapshots] = useState([]);
+
+  // Theme Sync Effect
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('deepcamera_theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
 
   // Fetch CCTV Live Status every 1s
   const fetchStatus = async () => {
@@ -136,6 +149,8 @@ export default function App() {
         isMuted={isMuted}
         onToggleMute={() => setIsMuted(!isMuted)}
         onOpenSettings={() => setIsSettingsOpen(true)}
+        theme={theme}
+        toggleTheme={toggleTheme}
       />
 
       {/* Main Grid: Video Player (Left/Center) + Smart Panels (Right) */}
@@ -210,30 +225,27 @@ export default function App() {
           )}
 
           {activeRightTab === 'events' && (
-            <div className="glass-panel" style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12, height: 580 }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: 10 }}>
-                <span style={{ fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: '#fff', display: 'flex', alignItems: 'center', gap: 8, fontSize: 12 }}>
+            <div className="glass-panel event-timeline-panel">
+              <div className="event-panel-header">
+                <span className="event-panel-title">
                   <ShieldAlert size={16} color="var(--cyan)" />
                   Real-Time Incident & Event Timeline
                 </span>
-                <span className="font-mono" style={{ fontSize: 10, color: 'var(--text-muted)' }}>
+                <span className="font-mono event-count-badge">
                   {status?.recent_events?.length || 0} Events
                 </span>
               </div>
-              <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div className="event-list-scroll">
                 {(!status?.recent_events || status.recent_events.length === 0) ? (
-                  <p style={{ color: 'var(--text-dark)', fontStyle: 'italic', textAlign: 'center', padding: 20 }}>No recent security events logged.</p>
+                  <p className="event-empty-msg">No recent security events logged.</p>
                 ) : (
                   status.recent_events.map((ev, idx) => (
-                    <div 
-                      key={idx} 
-                      style={{ padding: '10px 12px', borderRadius: 10, background: 'rgba(4, 7, 13, 0.6)', border: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}
-                    >
+                    <div key={idx} className="event-item-card">
                       <div>
-                        <h5 style={{ fontWeight: 700, color: '#f1f5f9', fontSize: 12 }}>{ev.title}</h5>
-                        <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{ev.msg}</p>
+                        <h5 className="event-title">{ev.title}</h5>
+                        <p className="event-msg">{ev.msg}</p>
                       </div>
-                      <span className="font-mono" style={{ fontSize: 10, color: 'var(--cyan-light)', display: 'flex', alignItems: 'center', gap: 4, whiteSpace: 'nowrap' }}>
+                      <span className="font-mono event-time-chip">
                         <Clock size={12} /> {ev.time}
                       </span>
                     </div>
